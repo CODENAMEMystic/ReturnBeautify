@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>Dispatch Beauty</title>
+    <script>
+      function manualEntryToggle(mes, button){
+        if(button.value == "Manual Entry Mode"){
+          document.getElementById("manualEntryTable").removeAttribute("hidden");
+          document.getElementById("dispEntryTable").setAttribute("hidden", true)
+        }
+        if(button.value == "Dispatch Entry Mode"){
+          document.getElementById("manualEntryTable").setAttribute("hidden", true)
+          document.getElementById("dispEntryTable").removeAttribute("hidden");
+          
+        }
+      }
+
+      function copyToClip(type){
+        if(type == 0){
+          //do something
+          navigator.clipboard.writeText("Kept for debug purpose");
+        }
+        else{
+          //do something else
+          navigator.clipboard.writeText("Debug Purposes 2");
+        }
+      }
+    </script>
+    <script> 
+      function processContactInfo() {
+        var generatedNarrative = ""
+        var generatedTow = ""
+        var contactReason = document.getElementById("contactR").value
+        var towReason = document.getElementById("towR").value
+        var towCompany = document.getElementById("towC").value
+        var licensePlate = document.getElementById("licenseR").innerHTML
+        var licenseState = document.getElementById("stateR").innerHTML
+        var licenseExpire = document.getElementById("expiresR").innerHTML
+        var vehicleColor = document.getElementById("colorR").innerHTML
+        var vehicleYear = document.getElementById("yearR").innerHTML
+        var vehicleMake = document.getElementById("makeR").innerHTML
+        var vehicleModel = document.getElementById("modelR").innerHTML
+        var supervisor = document.getElementById("supervisorApproval").value
+        var switchedTag = document.getElementById("switchedR").checked
+
+        var actualVin = document.getElementById("actualVinR").value
+        var actualYear = document.getElementById("actualYearR").value
+        var actualMake = document.getElementById("actualMakeR").value
+        var actualModel = document.getElementById("actualModelR").value
+        var actualExpires = document.getElementById("actualExpiresR").value
+
+        //Begin structure building
+        if(licenseState=="KS"){
+          licenseState = "KDOR"
+        }
+        else if(licenseState == "MO"){
+          licenseState = "DOR"
+        }
+        var recordsCheckReturn = "During a records check of the tags on the vehicle ("+licenseState+": "+licensePlate+")"
+
+        if(switchedTag){
+          recordsCheckReturn += " it came back to be a switched tag that was supposed to be on a "+vehicleYear+" "+vehicleMake+" "+vehicleModel+". During a records check of the VIN of the vehicle ("+actualVin+") dispatch advised it was a "+actualYear+" "+actualMake+" "+actualModel
+
+        }
+        else{
+          recordsCheckReturn += " it was shown to be a "+vehicleColor+" "+vehicleYear+" "+vehicleMake+" "+vehicleModel
+        }
+        var notOnPatrol = true;
+        
+        if(contactReason == "onPatrolParked"){
+          notOnPatrol = false;
+          generatedNarrative += "While on routine patrol, contact was made with the vehicle parked on city streets. "
+        }
+        if(contactReason == "onPatrol45"){
+          notOnPatrol = false;
+          generatedNarrative += "While on routine patrol, contact was made with the vehicle during a traffic stop. "
+        }
+        if(notOnPatrol){
+          generatedNarrative += "Contact was made with the vehicle in reference to ";
+        }
+        if(contactReason == "abandonedVeh"){
+          generatedNarrative += "an abandonded vehicle type call. "   
+          if(towReason == "expired"){
+            generatedNarrative += "Upon arrival I observed the vehicle parked on city streets. "
+          }
+        }
+        if(contactReason == "accident"){
+          generatedNarrative += "an accident type call. "
+        }
+        if(contactReason == "stolenAuto"){
+          generatedNarrative += "a recovered stolen auto type call. "
+        }
+        generatedNarrative += recordsCheckReturn
+        if(towReason == "expired"){
+          if(switchedTag){
+            generatedNarrative += " and had expired registration from "+actualExpires+". "
+          }
+          else{
+            generatedNarrative += " and had expired registration from "+licenseExpire+". "
+          }
+        }
+        if(towReason == "trafficHazard"){
+          generatedNarrative += ". [EXPLAIN HOW VEHICLE WAS A TRAFFIC HAZARD]. "
+        }
+        if(towReason == "accident"){
+          generatedNarrative += ". The vehicle had sustained major damage due to the crash and was disabled in the city street causing a traffic hazard. "
+        }
+        if(towReason == "stolenAuto"){
+          generatedNarrative += ". towed due to recovered stolen auto. "
+        }
+        generatedNarrative += "Per G.O. 35-196 a request to tow was approved by "+ supervisor
+        if(towReason == "trafficHazard"){
+          generatedNarrative += " for being a traffic hazard."
+        }
+
+        document.getElementById("narrative").innerHTML = generatedNarrative
+        if(towCompany == "alandonTow"){
+          generatedTow += "Alandon Tow "
+        }
+        if(towCompany == "allCity"){
+          generatedTow += "All City Tow "
+        }
+        generatedTow += "arrived on on scene and took custody of the vehicle. Pictures were taken of the vehicle prior to it's removal."
+        
+        document.getElementById("secondTest").innerHTML = generatedTow
+        document.getElementById("narrativeContainer").removeAttribute("hidden");
+        document.getElementById("infoRow1").classList.add("row")
+        document.getElementById("instructions").setAttribute("hidden", true)
+        if(switchedTag){
+          document.getElementById("actualVehicleInputTable").removeAttribute("hidden");
+          
+        }
+        else{
+          document.getElementById("manualEntryTable").setAttribute("hidden", true)
+          document.getElementById("actualVehicleInputTable").setAttribute("hidden", true)
+          document.getElementById("dispEntryTable").setAttribute("hidden", true)
+        }
+      }
+    </script>
+    <script> //DISPATCH RETURN DECIPHER CODE
+      function processReturnInfo(typeReturn) {
+        var selectedInput = "myInput"
+        if(typeReturn == "secondInput"){
+          selectedInput = "secondaryInputBox"
+        }
+        const INPUT = document.getElementById(selectedInput).value
+        if(INPUT == "") {
+          alert("Input box was left empty!");
+          return;
+        }
+        var array2 = [{}]; //will take single cell input split by " "
+        array2 = INPUT.split(" ");
+        var license = "LICENSE:"
+        var state = "STATE:"
+        var vMake = "MAKE:"
+        var vModel = "MODEL:"
+        var vColor = "COLOR:"
+        var vYear = "YEAR:"
+        var vVIN = "VIN:"
+        var vExpires = "EXPIRATION:"
+        var county = "COUNTY:"
+        var oln = "OLN:"
+        var primaryOwner = "PRIMARY:"
+
+        var initVVariables = [license, state,vMake,vModel,vColor,vYear,vVIN,vExpires,county,oln,primaryOwner]
+        var vVariables = initVVariables
+
+        var posReturn = []
+        //for each variable needing to be gathered;
+
+
+        for(obj in array2){ //For object in initial split
+          for(item in initVVariables){ //for item in (Static look for variables ("LICENSE:, STATE:, MAKE:") etc)
+            //if variable is found in input
+            if(array2[obj].indexOf(initVVariables[item]) > -1){
+              
+              var startIndex = array2[obj].indexOf(initVVariables[item])+initVVariables[item].length  //find the start of the value without "VIN:"
+              var endIndex = array2[obj].length //grab last letter 
+              var wantedString = array2[obj].substring(startIndex,endIndex)
+              //var idk = startIndex:(startIndex+initVVariables[item].length)
+              posReturn.push(wantedString)
+              vVariables[item] = wantedString
+              initVVariables[item] = "XXXXXXXXXXXXXX"
+            }
+          }
+        }
+        
+        if(typeReturn == "initialInput"){
+          document.getElementById("licenseR").innerHTML = posReturn[0];
+          document.getElementById("stateR").innerHTML = posReturn[1];
+          document.getElementById("makeR").innerHTML = posReturn[2].charAt(0).toUpperCase()+posReturn[2].slice(1).toLowerCase();
+          document.getElementById("modelR").innerHTML = posReturn[3].charAt(0).toUpperCase()+posReturn[3].slice(1).toLowerCase();;
+          document.getElementById("colorR").innerHTML = posReturn[4].charAt(0).toUpperCase()+posReturn[4].slice(1).toLowerCase();;
+          document.getElementById("yearR").innerHTML = posReturn[5];
+          document.getElementById("vinR").innerHTML = posReturn[6];
+          document.getElementById("ownerR").innerHTML = posReturn[7];
+          document.getElementById("olnR").innerHTML = posReturn[8];
+          document.getElementById("expiresR").innerHTML = posReturn[9];
+          document.getElementById("countyR").innerHTML = posReturn[10];
+          document.getElementById("towVariables").removeAttribute("hidden");
+        }
+        if(typeReturn == "secondInput"){
+          document.getElementById("actualMakeR").value = posReturn[2].charAt(0).toUpperCase()+posReturn[2].slice(1).toLowerCase();
+          document.getElementById("actualModelR").value = posReturn[3].charAt(0).toUpperCase()+posReturn[3].slice(1).toLowerCase();
+          document.getElementById("actualYearR").value = posReturn[5];
+          document.getElementById("actualVinR").value = posReturn[6];
+          document.getElementById("actualExpiresR").value = posReturn[9];
+          processContactInfo()
+        }
+        
+        
+        
+      }
+    </script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .container {
+        width: 100%;
+        display: flex;
+        overflow: auto;
+        //min-height: 100vh;
+        align-items: center;
+        flex-direction: column;
+      }
+      .row {
+        flex: 0 0 auto;
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+      }
+    
+      .oddColumn {
+        float: left;
+        padding: 10px;
+        border: 1px solid #000000;
+        margin: 10px
+      }
+      .oddLeft {
+        width: 25%
+      }
+      .oddRight {
+        width: 75%
+      }
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      .flex-container > div {
+        background-color: #f1f1f1;
+        margin: 10px;
+        padding: 20px;
+        font-size: 30px;
+      }
+      .column {
+        flex: 50%;
+        padding: 10px;
+      }
+      .biggerT {
+        border-spacing: 5px;
+      }
+      .cb {
+        background-color: #8dc9ff;
+      }
+      .cr {
+        background-color: #b95d5d;
+      }
+      .cg {
+        background-color: #fcfcfc;
+      }
+      .cw {
+        background-color: #ffffff;
+      }
+      h1 {
+        text-align: center;
+      }
+
+    </style>
+  </head>
+  <body style="background-color: #666666;">
+    <div class="container">
+      <div class="cg" style="padding:10px; width:100%"> <!-- Intro Information -->
+        <center>
+          <h1>Beautify Dispatch Vehicle Return</h1>
+          <p id="instructions">Copy and paste the dispatch return given in the call notes into the text box and press submit. Currently this process only works for KDOR responses.</p>
+        </center>
+        <div id="inputRow" class="">
+          <div class="column">
+            <div id="initialInput">
+              <center>
+                <label for="myInput">Dispatch Return: </label>
+                <input type="text" value="" id="myInput" onchange="processReturnInfo('initialInput')"/>
+              </center>
+              <!-- HERE ARE DEBUG BUTTONS FOR QUICK TESTING!!
+              <button onclick="copyToClip(0)">Return 1</button>
+              <button onclick="copyToClip(1)">Return 2</button>
+              -->
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div id="infoRow1" class=" cg" style="margin:10px 0px;"> <!-- Row 1 -->
+        <div class=""> <!-- Column 1: Tow Variable Selection/Input -->
+          <div class="row"> <!-- Row inside row1 --> 
+            <div class="oddColumn left"> <!-- Vehicle Information -->
+              <h1 id="testMe">Vehicle Info</h1>
+              <table>
+                <tr>
+                  <td><b>License:</b></td>
+                  <td id="licenseR"></td>
+                </tr>
+                <tr>
+                  <td><b>Reg. State:</b></td>
+                  <td id="stateR"></td>
+                </tr>
+                <tr>
+                  <td><b>Reg. Expire:</b></td>
+                  <td id="expiresR"></td>
+                </tr>
+                <tr>
+                  <td><b>County:</b></td>
+                  <td id="countyR"></td>
+                </tr>
+                <tr>
+                  <td><b>Color:</b></td>
+                  <td id="colorR"></td>
+                </tr>
+                <tr>
+                  <td><b>Year:</b></td>
+                  <td id="yearR"></td>
+                </tr>
+                <tr>
+                  <td><b>Make:</b></td>
+                  <td id="makeR"></td>
+                </tr>
+                <tr>
+                  <td><b>Model:</b></td>
+                  <td id="modelR"></td>
+                </tr>
+                <tr>
+                  <td><b>VIN:</b></td>
+                  <td id="vinR"></td>
+                </tr>
+                <tr>
+                  <td><b>Owner:</b></td>
+                  <td id="ownerR"></td>
+                </tr>
+                <tr>
+                  <td><b>OLN:</b></td>
+                  <td id="olnR"></td>
+                </tr>
+              </table>
+            </div>
+            <div id="towVariables" class="oddColumn right" hidden> <!-- Variable Input Stuff -->
+              <h1>Circumstances</h1>
+              <table style="border-spacing: 2px 6px;"> <!-- -->
+                <tr> <!-- Reason for Contact -->
+                  <td><label for="contactReason">Reason for contact:</label></td>
+                  <td>
+                    <select name="contactReason" id="contactR" onchange="processContactInfo()">
+                        <option></option>
+                        <option value="onPatrolParked">On Patrol - Parked</option>
+                        <option value="onPatrol45">On Patrol - Traffic Stop</option>
+                        <option value="abandonedVeh">Abandoned Vehicle</option>
+                        <option value="accident">Accident</option>
+                        <option value="stolenAuto">Recovered Stolen Auto</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr> <!-- Reason for Tow -->
+                  <td><label for="contactReason">Reason for tow:</label></td>
+                  <td><select name="towReason" id="towR" onchange="processContactInfo()">
+                        <option></option>
+                        <option value="expired">Expired Reg / Tags</option>
+                        <option value="trafficHazard">Traffic Hazard</option>
+                        <option value="accident">Invol. in Accident</option>
+                        <option value="stolenAuto">Recovered Stolen Auto</option>
+                      </select>
+                  </td>
+                </tr>
+                <tr> <!-- Who Towed Vehicle -->
+                  <td><label for="towComp">Who towed:</label></td>
+                  <td><select name="towComp" id="towC" onchange="processContactInfo()">
+                        <option></option>
+                        <option value="alandonTow">Alandon Tow</option>
+                        <option value="allCity">All City Tow</option>
+                      </select>
+                  </td>
+                </tr>
+                <tr> <!-- Supervisor that approved tow -->
+                  <td><label for="supervisorApproval">Who approved:</label></td>
+                  <td><input type="text" value="" onchange="processContactInfo()" id="supervisorApproval" list="supervisorList" name="supervisorApproval" placeholder="Supervisor name"/>
+                  
+                  
+                  <datalist id="supervisorList">
+                    <!-- WEST SUPERVISORS-->
+                    <option value='Supervisor 1'>Supervisor 1</option>
+                    <option value='Supervisor 2'>Supervisor 2</option>
+                    <option value='Supervisor 3'>Supervisor 3</option>
+                    <option value='Supervisor 4'>Supervisor 4</option>
+                  </datalist></td>
+                </tr>
+              </table>
+              <label for="switchedTags" id="switchedTags">Are Tags Switched?</label>
+              <input type="checkbox" id="switchedR" name="switchedTags" value=true onchange="processContactInfo()">
+              
+              <table id="actualVehicleInputTable" style="border: 1px solid #000000;" hidden>
+                <tr>
+                  <td>
+                    <input type="button" value="Manual Entry Mode"
+                      onClick="google.script.run
+                          .withSuccessHandler(manualEntryToggle)
+                          .withUserObject(this)
+                          .makeSuccess()"/>
+                  </td>
+                  <td>
+                    <input type="button" value="Dispatch Entry Mode"
+                      onClick="google.script.run
+                          .withSuccessHandler(manualEntryToggle)
+                          .withUserObject(this)
+                          .makeSuccess()"/>
+                  </td>
+                </tr>
+              </table>
+              <table id="dispEntryTable" hidden>
+                <tr>
+                  <td><label for="secondaryInputBox">Return by VIN: </label></td>
+                  <td><input type="text" value="" id="secondaryInputBox" onchange="processReturnInfo('secondInput')"/></td>
+                </tr>
+              </table>
+              <table id="manualEntryTable" hidden>
+                <tr>
+                  <td><label>VIN:</label></td>
+                  <td><input type="text" value="" id="actualVinR" onchange="processContactInfo()"/></td>
+                </tr>
+                <tr>
+                  <td><label>Year:</label></td>
+                  <td><input type="text" value="" id="actualYearR" onchange="processContactInfo()"/></td>
+                </tr>
+                <tr>
+                  <td><label>Make:</label></td>
+                  <td><input type="text" value="" id="actualMakeR" onchange="processContactInfo()"/></td>
+                </tr>
+                <tr>
+                  <td><label>Model:</label></td>
+                  <td><input type="text" value="" id="actualModelR" onchange="processContactInfo()"/></td>
+                </tr>
+                <tr hidden>
+                  <td><input type="text" value="" id="actualExpiresR" onchange="processContactInfo()"/></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="narrativeContainer" class="column" style="border: 1px solid #000000; margin:10px 10px" hidden> <!-- Column 2: Generated narrative-->
+          <h1>Narrative Output</h1>
+          <table>
+            <tr>
+              <td id="narrative"></td>
+            </tr>
+            <tr><td></td></tr>
+            <tr>
+              <td id="secondTest"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
