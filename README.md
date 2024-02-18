@@ -4,6 +4,7 @@
 Stable: v6.0.0
 
 Personal/Private Beautifier to make life that much simplier.
+
 Github has been updated to make this a public repo for transparency of how data is manipulated.
 
 # Update 6.0.0
