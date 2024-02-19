@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>Missing Person Generator</title>
+    <script>
+      function manualEntryToggle(mes, button){
+        if(button.value == "Manual Entry Mode"){
+          document.getElementById("manualEntryTable").removeAttribute("hidden");
+          document.getElementById("dispEntryTable").setAttribute("hidden", true)
+        }
+        if(button.value == "Dispatch Entry Mode"){
+          document.getElementById("manualEntryTable").setAttribute("hidden", true)
+          document.getElementById("dispEntryTable").removeAttribute("hidden");
+          
+        }
+      }
+
+      function copyToClip(type){
+        if(type == 0){
+          //do something
+          navigator.clipboard.writeText("Kept for debug purpose");
+        }
+        else{
+          //do something else
+          navigator.clipboard.writeText("Debug Purposes 2");
+        }
+      }
+    </script>
+    <script>
+      function generateNarrative(){
+        const lastName = document.getElementById("lastNameInput").value
+        const firstName = document.getElementById("firstNameInput").value
+        var dob = document.getElementById("dobInput").value
+        dob = dob.substring(5,7)+"/"+dob.substring(8,10)+"/"+dob.substring(0,4)
+        var race = document.getElementById("raceInput").value.toLowerCase()
+        if(race == "black"){
+          race = "B"
+        }
+        if(race == "white"){
+          race = "W"
+        }
+        var gender = document.getElementById("genderInput").value
+        if(gender == "Male"){
+          gender = "M"
+        }
+        if(gender == "Female"){
+          gender = "F"
+        }
+        var height = document.getElementById("heightInput").value;
+
+        var output = "genNar function output";
+
+        document.getElementById("narrative").innerHTML = output
+        document.getElementById("dispInfoRow1").innerHTML = lastName.toUpperCase()+", "+firstName.toUpperCase();
+        document.getElementById("dispInfoRow2").innerHTML = race+"/"+gender+" "+dob
+
+        
+        
+      }
+    </script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .container {
+        width: 100%;
+        display: flex;
+        overflow: auto;
+        //min-height: 100vh;
+        align-items: center;
+        flex-direction: column;
+      }
+      .row {
+        flex: 0 0 auto;
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+      }
+    
+      .oddColumn {
+        float: left;
+        padding: 10px;
+        border: 1px solid #000000;
+        margin: 10px
+      }
+      .oddLeft {
+        width: 25%
+      }
+      .oddRight {
+        width: 75%
+      }
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      .flex-container > div {
+        background-color: #f1f1f1;
+        margin: 10px;
+        padding: 20px;
+        font-size: 30px;
+      }
+      .column {
+        flex: 50%;
+        padding: 10px;
+      }
+      .biggerT {
+        border-spacing: 5px;
+      }
+      .border {
+        border: 1px solid #000000;
+      }
+      .cb {
+        background-color: #8dc9ff;
+      }
+      .cr {
+        background-color: #b95d5d;
+      }
+      .cg {
+        background-color: #fcfcfc;
+      }
+      .cw {
+        background-color: #ffffff;
+      }
+      .tc {
+        text-align: center;
+      }
+      h1 {
+        text-align: center;
+      }
+      h2 {
+        text-align: center;
+      }
+      h3 {
+        text-align: center;
+      }
+      h5 {
+        display: block;
+        font-size: 1.0em;
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+        margin-left: 0;
+        margin-right: 0;
+        font-weight: bold;
+        text-align: center;
+      }
+
+    </style>
+  </head>
+  <body style="background-color: #666666;">
+    <div class="container">
+      <div class="cg" style="padding:10px; width:100%"> <!-- Intro Information -->
+        <center>
+          <b>Missing Person/Juvenile Generator</b>
+        </center>
+      </div>
+      <div id="infoRow1" class="row cg" style="margin:10px 0px;"> <!-- Row 1 -->
+        <div class=""> <!-- Column 1: Missing Person Variables/Input -->
+          <div class="row"> <!-- Row inside row1 --> 
+            <div class="oddColumn left"> <!-- Missing Person Stuff -->
+              <h5>Missing Person's Information</h5>
+              <table class="border">
+                <tr>
+                  <td><b>Last Name:</b></td>
+                  <td><input type="text" value="" id="lastNameInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>First Name:</b></td>
+                  <td><input type="text" value="" id="firstNameInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Date of Birth:</b></td>
+                  <td><input type="date" value="" id="dobInput" onchange="generateNarrative()"/></td>
+                </tr>
+                <tr>
+                  <td><b>Race:</b></td>
+                  <td><input type="text" value="" onchange="generateNarrative()" id="raceInput" list="raceList" placeholder="Race"/>
+                    <datalist id="raceList">
+                      <option value="American Indian / Alaskan Native">American Indian / Alaskan Native</option>
+                        <option value="Asian / Pacific Islander">Asian / Pacific Islander</option>
+                        <option value="Black">Black</option>
+                        <option value="White">White</option>
+                    </datalist></td>
+                </tr>
+                <tr>
+                  <td><b>Gender:</b></td>
+                  <td><select id="genderInput" onchange="generateNarrative()">
+                        <option></option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Height:</b></td>
+                  <td><input type="number" value="" id="heightInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Weight:</b></td>
+                  <td><input type="number" value="" id="weightInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Eye Color:</b></td>
+                  <td><input type="text" value="" onchange="generateNarrative()" id="eyeColorInput" list="eyeColorList" placeholder="Eye Color"/>
+                  <datalist id="eyeColorList">
+                    <option value="Black">Black</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Brown">Brown</option>
+                    <option value="Gray">Gray</option>
+                    <option value="Green">Green</option>
+                    <option value="Hazel">Hazel</option>
+                    <option value="Maroon">Maroon</option>
+                    <option value="Multicolored">Multicolored</option>
+                    <option value="Pink">Pink</option>
+                    <option value="Unknown">Unknown</option>
+                  </datalist></td>
+                </tr>
+                <tr>
+                  <td><b>Hair Color:</b></td>
+                  <td><input type="text" value="" onchange="generateNarrative()" id="hairColorInput" list="hairColorList" placeholder="Hair Color"/>
+                  <datalist id="hairColorList">
+                    <option value="Bald">Bald</option>
+                    <option value="Black">Black</option>
+                    <option value="Blonde">Blonde</option>
+                    <option value="Brown">Brown</option>
+                    <option value="Gray">Gray</option>
+                    <option value="Red">Red</option>
+                    <option value="Sandy">White</option>
+                    <option value="Unknown">Unknown</option>
+                  </datalist></td>
+                </tr>
+                <tr>
+                  <td><b>Build:</b></td>
+                  <td><select id="buildInput" onchange="generateNarrative()">
+                        <option></option>
+                        <option value="thin">Thin</option>
+                        <option value="athletic">Athletic</option>
+                        <option value="heavy">Heavy</option>
+                        <option value="obese">Obese</option>
+                        <option value="medium">Medium</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Complexion:</b></td>
+                  <td><select id="complexionInput" onchange="generateNarrative()">
+                        <option></option>
+                        <option value="light">Light</option>
+                        <option value="lightBrown">Light Brown</option>
+                        <option value="medium">Medium</option>
+                        <option value="mediumBrown">Medium Brown</option>
+                        <option value="dark">Dark</option>
+                        <option value="darkBrown">Dark Brown</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Address:</b></td>
+                  <td><input type="text" value="" id="addressInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>SSC:</b></td>
+                  <td><input type="text" value="" id="sscInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Last Seen Wearing:</b></td>
+                  <td><input type="text" value="" id="lswInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Date Last Seen:</b></td>
+                  <td><input type="date" value="" id="dateLSInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Time Last Seen:</b></td>
+                  <td><input type="text" value="" id="timeLSInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Date Noticed Gone:</b></td>
+                  <td><input type="date" value="" id="dateNoticedInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Time Noticed Gone:</b></td>
+                  <td><input type="text" value="" id="timeNoticedInput" onchange="generateNarrative()"/><td>
+                </tr>
+              </table>
+            </div>
+            <div class="oddColumn right" > <!-- Complainants Information -->
+              <table class="border">
+                <tr class="tc">
+                  <td>Dispatch Date</td>
+                  <td>Dispatch Time</td>
+                </tr>
+                <tr>
+                  <td><input type="date" value="" id="dispatchDate" onchange="generateNarrative()"/></td>
+                  <td><input type="text" value="" id="dispatchTime" onchange="generateNarrative()"/><td>
+                </tr>
+              </table>
+              <h5>Complainant</h5>
+              <table style="border-spacing: 2px 6px;"> <!-- -->
+                <tr>
+                  <td><b>Last Name:</b></td>
+                  <td><input type="text" value="" id="complainantLastNameInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>First Name:</b></td>
+                  <td><input type="text" value="" id="complainantFirstNameInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Contact Number:</b></td>
+                  <td><input type="text" value="" id="complainantPhoneInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Address Same?:</b></td>
+                  <td><input type="checkbox" id="sameAddress" value=true onchange="generateNarrative()"><td>
+                </tr>
+                <tr id="complainantAddressRow">
+                  <td><b>Complainant's Address</b></td>
+                  <td><input type="text" value="" id="complainantAddressInput" onchange="generateNarrative()"/><td>
+                </tr>
+                <tr>
+                  <td><b>Race:</b></td>
+                  <td><input type="text" value="" onchange="generateNarrative()" id="complainantRaceInput" list="raceList" placeholder="Race"/>
+                    </td>
+                </tr>
+                <tr>
+                  <td><b>Gender:</b></td>
+                  <td><select id="complainantGenderInput" onchange="generateNarrative()">
+                        <option></option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Date of Birth:</b></td>
+                  <td><input type="date" value="" id="complainantDOBInput" onchange="generateNarrative()"/></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="narrativeContainer" class="column" style="border: 1px solid #000000; margin:10px 10px" > <!-- Column 2: Generated narrative-->
+          <div>
+            <h5>Dispatch Narrative (Copy & Paste)</h5>
+            <table style="font-size: 0.75em;"> <!-- Info to copy & paste into disp narrative -->
+              <tr>
+                <td>Runaway:</td>
+              </tr>
+              <tr>
+                <td id="dispInfoRow1">LastName, FirstName</td>
+              </tr>
+              <tr>
+                <td id="dispInfoRow2">R/S XX/XX/XXXX</td>
+              </tr>
+              <tr>
+                <td id="dispInfoRow3">Build: VAR, Skin: VAR</td>
+              </tr>
+              <tr>
+                <td id="dispInfoRow4">5'10" / 100lb - VAR eye / VAR hair</td>
+              </tr>
+              <tr>
+                <td id="dispInfoRow5">Soc: XXX-XX-XXXX;</td>
+              </tr>
+              <tr>
+                <td id="dispInforRow6">Address: XXXX N XXRD ST,  CITY, ST 12345</td>
+              </tr>
+              <tr>
+                <td id="dispInfoRow7">LSW var; Last seen on XX/XX/XXXX at approx XXXX hours</td>
+              </tr>
+              <tr>
+                <td id="dispInfoRow8">CLast, CFirst, Contact #: (XXX)XXX-XXXX; Address: (Same as Missing/ entered addy)</td>
+              </tr>
+            </table>
+            <button onclick="copyToClip(0)">Copy to Clipboard</button>
+          </div>
+          <h2>Narrative Output</h2>
+          <table>
+            <tr>
+              <td id="narrative"></td>
+            </tr>
+            <tr><td></td></tr>
+            <tr>
+              <td id="secondTest"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
