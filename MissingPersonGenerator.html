@@ -19,7 +19,17 @@
       function copyToClip(type){
         if(type == 0){
           //do something
-          navigator.clipboard.writeText("Kept for debug purpose");
+          var output = ""
+          output += document.getElementById("dispInfoRow1").innerHTML+"\n"
+          output += document.getElementById("dispInfoRow2").innerHTML+"\n"
+          output += document.getElementById("dispInfoRow3").innerHTML+"\n"
+          output += document.getElementById("dispInfoRow4").innerHTML+"\n"
+          output += document.getElementById("dispInfoRow5").innerHTML+"\n"
+          output += document.getElementById("dispInfoRow6").innerHTML+"\n"
+          output += document.getElementById("dispInfoRow7").innerHTML+"\n"
+          output += document.getElementById("dispInfoRow8").innerHTML
+          
+          navigator.clipboard.writeText(output);
         }
         else{
           //do something else
@@ -28,7 +38,7 @@
       }
     </script>
     <script>
-      function generateNarrative(){
+      function generateNarrative(elemUpdated){
         const lastName = document.getElementById("lastNameInput").value
         const firstName = document.getElementById("firstNameInput").value
         var dob = document.getElementById("dobInput").value
@@ -48,12 +58,64 @@
           gender = "F"
         }
         var height = document.getElementById("heightInput").value;
+        height = height.substring(0,1)+"'"+height.substring(2,4)+'"';
+        var weight = document.getElementById("weightInput").value;
+        var eyeColor = document.getElementById("eyeColorInput").value;
+        var hairColor = document.getElementById("hairColorInput").value;
+        var build = document.getElementById("buildInput").value;
+        var complexion = document.getElementById("complexionInput").value;
+        var address = document.getElementById("addressInput").value;
+        var social = document.getElementById("sscInput").value;
+        if(elemUpdated == "sscInput"){
+          social = social.substring(0,3)+"-"+social.substring(3,5)+"-"+social.substring(5,9)
+          document.getElementById('sscInput').value = social
+        }
+        var lsw = document.getElementById('lswInput').value;
+        var dateLastSeen = document.getElementById('dateLSInput').value;
+        dateLastSeen = dateLastSeen.substring(5,7)+"/"+dateLastSeen.substring(8,10)+"/"+dateLastSeen.substring(0,4)
+        var timeLastSeen = document.getElementById('timeLSInput').value;
+        var dateNoticed = document.getElementById('dateNoticedInput').value;
+        var timeNoticed = document.getElementById('timeNoticedInput').value;
+        var dispatchDate = document.getElementById('dispatchDate').value;
+        var dispatchTime = document.getElementById('dispatchTime').value;
+
+        var cLastName = document.getElementById('complainantLastNameInput').value;
+        var cFirstName = document.getElementById('complainantFirstNameInput').value;
+        var cPhone = document.getElementById('complainantPhoneInput').value;
+        if(elemUpdated == "cPhone"){
+          cPhone = "("+cPhone.substring(0,3)+")"+cPhone.substring(3,6)+"-"+cPhone.substring(6,10)
+          document.getElementById('complainantPhoneInput').value = cPhone
+        }
+        var cAddress = address;
+        if(elemUpdated == 'sameAddress'){
+          
+          if(document.getElementById('sameAddress').checked == true){
+            document.getElementById("complainantAddressRow").setAttribute("hidden", true)
+          }
+          else{
+            cAddress = document.getElementById('complainantAddressInput').value;
+            document.getElementById('complainantAddressRow').removeAttribute('hidden')
+          }
+        }
+        
+        
+        var cRace = document.getElementById('complainantRaceInput').value;
+        var cGender = document.getElementById('complainantGenderInput').value;
+        
 
         var output = "genNar function output";
 
         document.getElementById("narrative").innerHTML = output
         document.getElementById("dispInfoRow1").innerHTML = lastName.toUpperCase()+", "+firstName.toUpperCase();
         document.getElementById("dispInfoRow2").innerHTML = race+"/"+gender+" "+dob
+        document.getElementById("dispInfoRow3").innerHTML = "Build: "+build+", Skin: "+complexion
+        document.getElementById("dispInfoRow4").innerHTML = height+" / "+weight+"lb - "+eyeColor+" eye / "+hairColor+" hair";
+        document.getElementById("dispInfoRow5").innerHTML = "SOC: "+social
+        document.getElementById("dispInfoRow6").innerHTML = "Address: "+address
+        document.getElementById("dispInfoRow7").innerHTML = "LSW: "+lsw+"; Last seen on "+dateLastSeen+" at approx. "+timeLastSeen+" hours"
+        //CLast, CFirst, Contact #: (XXX)XXX-XXXX; Address: (Same as Missing/ entered addy)
+        document.getElementById("dispInfoRow8").innerHTML = cLastName.toUpperCase()+", "+cFirstName.toUpperCase()+", Contact#: "+cPhone+"; Address: "+cAddress;
+
 
         
         
@@ -262,7 +324,7 @@
                 </tr>
                 <tr>
                   <td><b>SSC:</b></td>
-                  <td><input type="text" value="" id="sscInput" onchange="generateNarrative()"/><td>
+                  <td><input type="text" value="" id="sscInput" onchange="generateNarrative('sscInput')"/><td>
                 </tr>
                 <tr>
                   <td><b>Last Seen Wearing:</b></td>
@@ -309,13 +371,13 @@
                 </tr>
                 <tr>
                   <td><b>Contact Number:</b></td>
-                  <td><input type="text" value="" id="complainantPhoneInput" onchange="generateNarrative()"/><td>
+                  <td><input type="text" value="" id="complainantPhoneInput" onchange="generateNarrative('cPhone')"/><td>
                 </tr>
                 <tr>
                   <td><b>Address Same?:</b></td>
-                  <td><input type="checkbox" id="sameAddress" value=true onchange="generateNarrative()"><td>
+                  <td><input type="checkbox" id="sameAddress" value=true onchange="generateNarrative('sameAddress')" checked><td>
                 </tr>
-                <tr id="complainantAddressRow">
+                <tr id="complainantAddressRow" hidden>
                   <td><b>Complainant's Address</b></td>
                   <td><input type="text" value="" id="complainantAddressInput" onchange="generateNarrative()"/><td>
                 </tr>
@@ -364,7 +426,7 @@
                 <td id="dispInfoRow5">Soc: XXX-XX-XXXX;</td>
               </tr>
               <tr>
-                <td id="dispInforRow6">Address: XXXX N XXRD ST,  CITY, ST 12345</td>
+                <td id="dispInfoRow6">Address: XXXX N XXRD ST,  CITY, ST 12345</td>
               </tr>
               <tr>
                 <td id="dispInfoRow7">LSW var; Last seen on XX/XX/XXXX at approx XXXX hours</td>
